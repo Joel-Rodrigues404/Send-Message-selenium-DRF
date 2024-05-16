@@ -1,13 +1,12 @@
+from selenium.webdriver.common.by import By
 from rest_framework.views import APIView
 from django.http import HttpResponse
-import time
-from selenium.webdriver.common.by import By
-# import pandas as pd
 from selenium import webdriver
 import urllib
-# import os
+import time
+import os
 
-# Create your views here.
+NUM = str(os.getenv("NUM"))
 
 
 class SendMessage(APIView):
@@ -16,16 +15,15 @@ class SendMessage(APIView):
         navegador = webdriver.Chrome()
         navegador.get("https://web.whatsapp.com")
 
-        while len(navegador.find_elements(By.ID, 'side')) < 1:
-            print('--=-=-=-AQUI0-=-=-=-=-==')
+        while len(navegador.find_elements(By.ID, "side")) < 1:
             time.sleep(1)
         time.sleep(2)
 
         for _ in range(2):
             time.sleep(3)
-            nome = 'joel'
-            mensagem = 'olá'
-            telefone = 'Change-num'
+            nome = "joel"
+            mensagem = "olá"
+            telefone = NUM
 
             texto = mensagem.replace("fulano", nome)
             texto = urllib.parse.quote(texto)
@@ -33,18 +31,26 @@ class SendMessage(APIView):
             link = f"https://web.whatsapp.com/send?phone={telefone}&text={texto}"
 
             navegador.get(link)
-            while len(navegador.find_elements(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[2]/button/span')) < 1:  # -> lista for vazia -> que o elemento não existe ainda
-                print('--=-=-=-AQUI-=-=-=-=-==')
+            while (
+                len(
+                    navegador.find_elements(
+                        By.XPATH,
+                        '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[2]/button/span',
+                    )
+                )
+                < 1
+            ):
                 time.sleep(1)
             time.sleep(5)
-            print('--=-=-=-AQUI2-=-=-=-=-==')
 
             time.sleep(5)
-            navegador.find_element(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[2]/button/span').click()
-            print('--=-=-=-AQUI3-=-=-=-=-==')
+            navegador.find_element(
+                By.XPATH,
+                '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[2]/button/span',
+            ).click()
 
             time.sleep(3)
 
-            print('FIMM')
+            print("FIMM")
 
         return HttpResponse("deu bom")
